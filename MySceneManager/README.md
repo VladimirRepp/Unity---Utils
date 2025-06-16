@@ -19,7 +19,7 @@ Unity Scene Manager Utility
 - Добавьте в проект: cкопируйте SceneManager.cs в папку Scripts/Utilities
 Базовый пример:  <br />
 
-<csharp> 
+``` csharp
 // Загрузка сцены по имени
 SceneManager.LoadSceneAsync("GameScene");
 
@@ -27,11 +27,11 @@ SceneManager.LoadSceneAsync("GameScene");
 SceneManager.OnLoadProgress += (progress) => {
     Debug.Log($"Загрузка: {progress * 100}%");
 };
-</csharp>
+``` 
 
- <br /> <br />
+ <br />
 Расширенные возможности:
-<csharp> 
+``` csharp
 // С кастомным переходом
 SceneManager.LoadSceneWithFade("Menu", 2.0f);
 
@@ -39,9 +39,9 @@ SceneManager.LoadSceneWithFade("Menu", 2.0f);
 SceneManager.PreloadImportantAssets(() => {
     Debug.Log("Ресурсы готовы!");
 });
-</csharp> 
+``` 
 
- <br /> <br />
+ <br />
 🛠 Структура кода <br />
 MySceneManager/ <br />
 ├── SceneManager.cs           # Основной класс менеджера <br />
