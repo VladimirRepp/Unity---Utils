@@ -1,84 +1,76 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 using TMPro;
+using UnityEngine.UI;
 
 /// <summary>
-/// LoadingScene - самая первая сцена в списке для сборки
-/// (так как в ней подгружаются данные и для главного меню)
+/// LoadingScene - сцена загрузки, которая использует MySceneManager для асинхронной загрузки
 /// </summary>
 public class LoadingScene : MonoBehaviour
 {
-    private static int SCENE_ID;
-    private static string SCENE_NAME;
+    [Header("Settings")]
+    [Tooltip("Минимальное время показа экрана загрузки (секунды)")]
+    [SerializeField] private float _minLoadingTime = 2f;
 
-    [SerializeField] private int _defaultSceneId = 1; // main menu
+    [Header("UI Elements")]
+    [SerializeField] private Image _progressImg;
+    [SerializeField] private Slider _progressBar;
+    [SerializeField] private TMP_Text _progressText;
+    [SerializeField] private GameObject _loadingCompleteHint;
 
-    private AsyncOperation _asyncOperation;
-
-    /// <summary>
-    /// SCENE_NAME будет пустым, так как может быть только 
-    /// одно поле которое отвечает за выбор необходимого уровня
-    /// </summary>
-    public static int SceneId
-    {
-        get => SCENE_ID;
-        set
-        {
-            SCENE_NAME = "";
-            SCENE_ID = value;
-        }
-    }
-
-    /// <summary>
-    /// SCENE_ID будет пустым, так как может быть только 
-    /// одно поле которое отвечает за выбор необходимого уровня
-    /// </summary>
-    public static string SceneName
-    {
-        get => SCENE_NAME;
-        set
-        {
-            SCENE_NAME = value;
-            SCENE_ID = -1;
-        }
-    }
+    private float _loadingStartTime;
+    private bool _isLoadingComplete;
 
     private void Start()
     {
-        if (SCENE_ID == 0 || SCENE_NAME == "LoadingScene")
-            SCENE_ID = _defaultSceneId;
+        _loadingStartTime = Time.time;
+        _isLoadingComplete = false;
+        _loadingCompleteHint.SetActive(false);
 
-        StartCoroutine(LoadSceneRoutine());
+        if (_progressBar != null) _progressBar.value = 0f;
+        if (_progressText != null) _progressText.text = "0%";
+
+        StartLoading();
     }
 
-    IEnumerator LoadSceneRoutine() 
+    private async void StartLoading()
     {
-        yield return new WaitForSeconds(1);
+        // Ждем минимальное время загрузки и саму загрузку параллельно
+        var loadingTask = LoadTargetSceneAsync();
+        var minTimeTask = Task.Delay((int)(_minLoadingTime * 1000));
 
-        if (SCENE_ID != -1)
-        {
-            Debug.Log($"LoadingScene.LoadSceneRoutine(): Переход на уровень - {SCENE_ID}");
-            _asyncOperation = SceneManager.LoadSceneAsync(SCENE_ID);
-        }
-        else if (SCENE_NAME != "")
-        {
-            Debug.Log($"LoadingScene.LoadSceneRoutine(): Переход на уровень - {SCENE_NAME}");
-            _asyncOperation = SceneManager.LoadSceneAsync(SCENE_NAME);
-        }
-        else
-        {
-            Debug.Log($"LoadingScene.LoadSceneRoutine(): Переход на уровень - {_defaultSceneId}");
-            _asyncOperation = SceneManager.LoadSceneAsync(_defaultSceneId);
-        }
+        await Task.WhenAll(loadingTask, minTimeTask);
 
-        // Здесь же можно добавить собственное условие для ожидания
-        while (!_asyncOperation.isDone) 
+        _isLoadingComplete = true;
+        _loadingCompleteHint.SetActive(true);
+    }
+
+    private async Task LoadTargetSceneAsync()
+    {
+        var progress = new System.Progress<float>(UpdateProgressUI);
+        await MySceneManager.LoadTargetSceneAsync(progress);
+    }
+
+    private void UpdateProgressUI(float progress)
+    {
+        if (_progressBar != null)
+            _progressBar.value = progress;
+
+        if (_progressText != null)
+            _progressText.text = $"{Mathf.RoundToInt(progress * 100)}%";
+    }
+
+    private void Update()
+    {
+        // Пример: переход после завершения загрузки по нажатию клавиши или нажатия на экран
+        if (_isLoadingComplete && (Input.anyKeyDown || Input.GetMouseButton(0)))
         {
-            float progress = _asyncOperation.progress;
-            yield return 0;
+            // Активируем сцену (если еще не активирована)
+            var currentOperation = MySceneManager.GetCurrentLoadingOperation();
+            if (currentOperation != null && !currentOperation.allowSceneActivation)
+            {
+                currentOperation.allowSceneActivation = true;
+            }
         }
     }
 }
