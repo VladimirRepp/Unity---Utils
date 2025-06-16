@@ -21,10 +21,10 @@ Unity Scene Manager Utility
 
 ``` csharp
 // Загрузка сцены по имени
-SceneManager.LoadSceneAsync("GameScene");
+MySceneManager.LoadSceneAsync("GameScene");
 
 // С подпиской на события
-SceneManager.OnLoadProgress += (progress) => {
+MySceneManager.OnLoadProgress += (progress) => {
     Debug.Log($"Загрузка: {progress * 100}%");
 };
 ``` 
@@ -34,10 +34,10 @@ SceneManager.OnLoadProgress += (progress) => {
 
 ``` csharp
 // С кастомным переходом
-SceneManager.LoadSceneWithFade("Menu", 2.0f);
+MySceneManager.LoadSceneWithFade("Menu", 2.0f);
 
 // С предзагрузкой ассетов
-SceneManager.PreloadImportantAssets(() => {
+MySceneManager.PreloadImportantAssets(() => {
     Debug.Log("Ресурсы готовы!");
 });
 ``` 
