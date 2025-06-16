@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class ObjectRotation : MonoBehaviour
 {
-    [SerializeField] private float _speedRotation;
+    [SerializeField] private float _rotationSpeed = 50f;
+    [SerializeField] private Vector3 _rotationAxis = Vector3.up;
 
-    private void Update()
+    void Update()
     {
-        Vector3 newRotation = new Vector3(0, 0, Time.deltaTime * _speedRotation);
-        transform.Rotate(newRotation);
+        transform.Rotate(_rotationAxis * _rotationSpeed * Time.deltaTime, Space.World);
     }
 }
