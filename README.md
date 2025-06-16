@@ -1,6 +1,3 @@
 # CsUnity
-The C# code base for Unity
-- patterns
-- general principles
-- static class
-- and much more
+Ссылки на полезные репозитории по Unity: 
+- Загрузчик сцен: https://github.com/VladimirRepp/Unity---MySceneManager
