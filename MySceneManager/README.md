@@ -12,7 +12,7 @@ Advanced Scene Management System for Unity
 - Мультиплеер-совместимая архитектура <br />
  <br />
 
-🛠 Техническая реализация
+🛠 Примеры использования
 ``` csharp
 // Пример использования с кастомными параметрами
 AdvancedSceneLoader.Load(
@@ -21,6 +21,17 @@ AdvancedSceneLoader.Load(
     dependencies: new[] {"PrefabsBundle"},
     transition: new FadeTransition(duration: 1.5f)
 );
+
+// Загрузка сцены с отслеживанием прогресса
+await MySceneManager.LoadSceneAsync("GameScene");
+
+// С подпиской на события
+MySceneManager.OnLoadingProgress += progress => {
+    Debug.Log($"Loading progress: {progress * 100}%");
+};
+
+// Аддитивная загрузка
+await MySceneManager.LoadSceneAdditiveAsync("UI_Scene");
 ```
 
 Архитектурные принципы:
