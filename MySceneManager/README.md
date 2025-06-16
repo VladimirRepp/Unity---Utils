@@ -31,6 +31,7 @@ SceneManager.OnLoadProgress += (progress) => {
 
  <br />
 Расширенные возможности:
+
 ``` csharp
 // С кастомным переходом
 SceneManager.LoadSceneWithFade("Menu", 2.0f);
