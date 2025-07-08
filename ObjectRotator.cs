@@ -9,6 +9,6 @@ public class ObjectRotator : MonoBehaviour
 
     void Update()
     {
-        transform.Rotate(_rotationAxis * _rotationSpeed * Time.deltaTime, Space.World);
+        transform.Rotate(_axis * _speed * Time.deltaTime, Space.World);
     }
 }
