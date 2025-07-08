@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectRotation : MonoBehaviour
+public class ObjectRotator : MonoBehaviour
 {
-    [SerializeField] private float _rotationSpeed = 50f;
-    [SerializeField] private Vector3 _rotationAxis = Vector3.up;
+    [SerializeField] private float _speed = 50f;
+    [SerializeField] private Vector3 _axis = Vector3.up;
 
     void Update()
     {
